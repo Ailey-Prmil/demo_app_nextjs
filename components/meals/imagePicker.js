@@ -2,7 +2,7 @@
 import Styles from "./imagePicker.module.css";
 import { useRef } from "react";
 
-export default function ImagePicker({ label, name, onImgChange }) {
+export function ImagePicker({ label, name, onImgChange }) {
   const imagePickerRef = useRef();
 
   function imagePickHandler() {

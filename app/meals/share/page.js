@@ -1,23 +1,29 @@
 "use client";
-import ImagePicker, { ImagePreview } from "@/components/meals/imagePicker";
+import { ImagePicker, ImagePreview } from "@/components/meals/imagePicker";
+import { SubmitHandler } from "@/lib/submitAction";
 import classes from "./page.module.css";
 import { useState, useEffect } from "react";
+import { useFormState } from "react-dom";
+import SubmitFormButtion from "@/components/meals/submitFormButton";
 
 export default function ShareMealPage() {
   const [pickedImage, setPickedImage] = useState();
-  const [previewUrl, setPreviewUrl] = useState("");
+  const [previewUrl, setPreviewUrl] = useState();
+  const [formState, formStateFunctions] = useFormState(SubmitHandler, {message:  null});
 
   useEffect(() => {
-    if (pickedImage) {
-      const fileReader = new FileReader();
+    if (!pickedImage) return;
 
-      fileReader.readAsDataURL(pickedImage);
-      fileReader.onloadend = () => {
-        setPreviewUrl(fileReader.result);
-      };
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result);
     }
+
+    reader.readAsDataURL(pickedImage);
   }, [pickedImage]);
 
+  
   return (
     <>
       <header className={classes.header}>
@@ -27,7 +33,7 @@ export default function ShareMealPage() {
         <p>Or any other meal you feel needs sharing!</p>
       </header>
       <main className={classes.main}>
-        <form className={classes.form}>
+        <form className={classes.form} action={formStateFunctions}>
           <div className={classes.row}>
             <p>
               <label htmlFor="name">Your name</label>
@@ -56,13 +62,17 @@ export default function ShareMealPage() {
             ></textarea>
           </p>
           <ImagePicker
-            onImgChange={(e) => setPickedImage(e.currentTarget.files[0])}
+            label="Meal Image"
+            name="image"
+            onImgChange={(e) => setPickedImage(e.target.files[0])}
           />
           <p className={classes.actions}>
-            <button type="submit">Share Meal</button>
+            {formState.message && <p className=" text-rose-600 text-center text-2xl">{formState.message}</p>}
+            <SubmitFormButtion />
           </p>
         </form>
         <ImagePreview image={previewUrl} className=" grid-cols-2" />
+        
       </main>
     </>
   );

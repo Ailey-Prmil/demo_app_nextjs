@@ -12,19 +12,6 @@ async function ShowMeals() {
     )
 }
 
-export const convertToBase64 = (file) => {
-
-    return new Promise((resolve) => {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        resolve(reader.result);
-      }
-
-      reader.readAsDataURL(file)
-    })
-  }
-
 export default function MealsPage() {
     return (
         <>
